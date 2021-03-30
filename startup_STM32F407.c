@@ -27,8 +27,13 @@ extern uint32_t _edata;
 extern uint32_t _sbss;
 extern uint32_t _ebss;
 
+extern uint32_t _loadaddr_data; //Load address of stdlib
+
 // Prototype of main
 int main(void);
+
+// Prototype of function initializing the library functions
+void __libc_init_array(void);
 
 //Default handler definition
 void Default_Handler(void);
@@ -237,7 +242,7 @@ void Reset_Handler(void){
 	uint32_t size_data = (uint32_t)&_edata - (uint32_t)&_sdata; //Size of the data section
 	
 	uint8_t* pDest = (uint8_t*) &_sdata;  // SRAM
-	uint8_t* pSrc  = (uint8_t*) &_etext;  // Flash memory
+	uint8_t* pSrc  = (uint8_t*) &_loadaddr_data;  // Flash memory
 	
 	for(int i = 0; i < size_data; i++){
 		*pDest = *pSrc; // Copying byte by byte
@@ -256,6 +261,7 @@ void Reset_Handler(void){
 	}
 	
 	// Initialize the C standard library (Inorder to use library functions)
+	__libc_init_array();
 	
 	// Invoke main
 	main();
