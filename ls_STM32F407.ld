@@ -29,16 +29,25 @@ SECTIONS
 	. = ALIGN(4);       /* Aliging to word boundary*/
     *(.isr_vector)
     *(.text)
+	*(.text.*)
+	*(.init)
+	*(.fini)
 	*(.rodata)
+	*(.rodata.*)
 	. = ALIGN(4);       /* Aliging to word boundary*/
 	_etext = .;        /* define a global symbols at end of text memory (.data section starts here)*/
   } > FLASH
+  
+  /* The stdlib introduces new sections between .text and .data.
+		-Therefore this should be changed. */
+  _loadaddr_data = LOADADDR(.data); /* Storing the load address to a new symbol */
   
   .data :
   {
 	. = ALIGN(4);       /* Aliging to word boundary*/  
 	_sdata = .;        /*Create a global symbol at data start*/  
 	*(.data)
+	*(.data.*)
 	. = ALIGN(4);       /* Aliging to word boundary*/
 	_edata = .;        /* define a global symbol at data end */
   } > SRAM AT> FLASH   /* VMA - SRAM, LMA - FLASH*/
@@ -47,9 +56,15 @@ SECTIONS
   {
 	. = ALIGN(4);       /* Aliging to word boundary*/  
 	_sbss = .;  		/* define a global symbol at bss start */
+	__bss_start__ = _sbss; /* Symbol required when integrating stdlib*/
 	*(.bss)
+	*(.bss.*)
 	. = ALIGN(4);       /* Aliging to word boundary*/
 	_ebss = .;  		/* define a global symbol at bss end */
+	__bss_end__ = _ebss;    /* Symbol required when integrating stdlib*/
+	. = ALIGN(4); 
+	end = .;     /*This is required for sbark => To indicate the start of heap*/
+	__end__ = end; /* Required by the semihosting library*/
   } > SRAM
 
 }
