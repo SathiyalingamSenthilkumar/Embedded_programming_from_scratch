@@ -10,7 +10,7 @@
 #      clean - removes all generated files
 #------------------------------------------------------------------------------
 
-SOURCES = main.c startup_STM32F407.c
+SOURCES = main.c startup_STM32F407.c 
 
 TARGET = final
 
@@ -18,15 +18,16 @@ TARGET = final
 LINKER_FILE = ls_STM32F407.ld
 CPU = cortex-m4
 ISA_ARCH = thumb
-SPECS = nosys.specs
+SPECS = rdimon.specs
 
 
 # Compiler Flags and Defines
 CC = arm-none-eabi-gcc 
 LD = arm-none-eabi-ld
-LDFLAGS = -Wl,-Map=$(TARGET).map -T $(LINKER_FILE) -nostdlib
-CFLAGS =  -O0 -Wall -Werror -std=gnu11 -mcpu=$(CPU) -m$(ISA_ARCH) 
-	#-march=armv7e-m -mfloat-abi=hard -mfpu=fpv4-sp-d16 \
+LDFLAGS = -Wl,-Map=$(TARGET).map -T $(LINKER_FILE) --specs=$(SPECS)
+CFLAGS =  -O0 -Wall -Werror -std=gnu11 -mcpu=$(CPU) -m$(ISA_ARCH) \
+			-mfloat-abi=soft
+	#-march=armv7e-m  -mfpu=fpv4-sp-d16 \
 	#--specs=$(SPECS) -Wall \
 	#-g #For debug
 
@@ -66,4 +67,7 @@ $(TARGET).out: $(OBJS)
 .PHONY: clean
 clean:
 	rm -f $(OBJS) $(PRES) $(ASMS) $(TARGET).out $(TARGET).map
-# $(TARGET).asm
+
+.PHONY: load
+load:
+	openocd -f board/stm32f4discovery.cfg
