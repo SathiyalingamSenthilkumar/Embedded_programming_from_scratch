@@ -24,16 +24,22 @@ SPECS = rdimon.specs
 # Compiler Flags and Defines
 CC = arm-none-eabi-gcc 
 LD = arm-none-eabi-ld
-LDFLAGS = -Wl,-Map=$(TARGET).map -T $(LINKER_FILE) --specs=$(SPECS)
-CFLAGS =  -O0 -Wall -Werror -std=gnu11 -mcpu=$(CPU) -m$(ISA_ARCH) \
-			-mfloat-abi=soft
-	#-march=armv7e-m  -mfpu=fpv4-sp-d16 \
-	#--specs=$(SPECS) -Wall \
-	#-g #For debug
-
 SIZETOOL = arm-none-eabi-size     #To produce the size of code
 DUMPTOOL = arm-none-eabi-objdump  
 
+#  Target specific flags
+TARGET_SPECIFIC_FLAGS = --specs=$(SPECS) -mcpu=$(CPU) \
+						-m$(ISA_ARCH) -mfloat-abi=soft
+
+#Compiler Flags
+CFLAGS =  -O0 -Wall -Werror -std=gnu11 \
+			$(TARGET_SPECIFIC_FLAGS)
+			#-g #For debug
+
+#Linker Flags
+LDFLAGS = $(TARGET_SPECIFIC_FLAGS)\
+          -Wl,-Map=$(TARGET).map -T $(LINKER_FILE) 
+		    
 
 # Creating object file variables
 OBJS = $(SOURCES:.c=.o)
@@ -61,7 +67,7 @@ ASMS = $(SOURCES:.c=.asm)
 all:$(TARGET).out 
 
 $(TARGET).out: $(OBJS)
-	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^
+	$(CC) $(LDFLAGS) -o $@ $^
 
 # Cleaning all non-source files and executables
 .PHONY: clean
