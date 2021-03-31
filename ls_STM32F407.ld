@@ -21,13 +21,22 @@ MEMORY
   SRAM     (xrw)   : ORIGIN = 0x20000000,   LENGTH = 128K
 }
 
+_estack = ORIGIN(SRAM) + LENGTH(SRAM); /* Computing the start address of SRAM for stack
+										Can be used to create the first element of vector table*/
+
 /* Sections Definitions*/
 SECTIONS
-{
+{	
+  .isr_vector :
+  {
+	. = ALIGN(4);       /* Aliging to word boundary*/
+    KEEP(*(.isr_vector))
+    . = ALIGN(4);       /* Aliging to word boundary*/       
+  } > FLASH
+   
   .text :
   {	
 	. = ALIGN(4);       /* Aliging to word boundary*/
-    *(.isr_vector)
     *(.text)
 	*(.text.*)
 	*(.init)
@@ -59,6 +68,7 @@ SECTIONS
 	__bss_start__ = _sbss; /* Symbol required when integrating stdlib*/
 	*(.bss)
 	*(.bss.*)
+	*(COMMON)           /* Uninitalized data that is not yet allocated */
 	. = ALIGN(4);       /* Aliging to word boundary*/
 	_ebss = .;  		/* define a global symbol at bss end */
 	__bss_end__ = _ebss;    /* Symbol required when integrating stdlib*/
