@@ -108,8 +108,11 @@ __attribute__((weak)) int _write(int file, char *ptr, int len)
 
 	for (DataIdx = 0; DataIdx < len; DataIdx++)
 	{
+#ifdef DEBUG_SWV
+		ITM_SendChar(*ptr++);
+#else /*DEBUG_SWV*/
 		__io_putchar(*ptr++);
-		//ITM_SendChar(*ptr++);
+#endif /*DEBUG_SWV*/
 	}
 	return len;
 }

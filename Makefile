@@ -18,7 +18,7 @@ SOURCES = main.c \
 TARGET = final
 
 # Flags
-DEBUG ?= none # support semihosting
+DEBUG ?= none # support semihosting, swv
 
 # Architectures Specific Flags
 LINKER_FILE = ls_STM32F407.ld
@@ -52,6 +52,11 @@ ifeq ($(DEBUG), semihosting)
 	CFLAGS += -DDEBUG_SEMIHOSTING
 	CFLAGS += -g
 	LDFLAGS += --specs=$(SPECS) # For using semi-hosted version of syscalls
+else ifeq ($(DEBUG), swv)
+	CFLAGS += -DDEBUG_SWV
+	CFLAGS += -g
+	SOURCES += syscalls.c
+	SOURCES += debug.c
 else
 	SOURCES += syscalls.c
 endif

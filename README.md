@@ -62,3 +62,11 @@ arm-none-eabi-gdb -ex "target extended-remote localhost:3333" -ex "monitor reset
 - Now, the printouts should be seen on the server terminal.
 
 > NOTE: Starting the application before enabling semi-hosting would result in a HardFault.
+
+### Serial wire viewer (SWD + SWO)
+- Most of the implementation was inspired from this page:
+https://www.codeinsideout.com/blog/stm32/swv/
+
+- The serial wire viewer will work on the IDE, to get it working
+with openOCD may be this link is useful:
+https://www.openstm32.org/forumthread4455

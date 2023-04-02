@@ -49,6 +49,13 @@ int main(void)
 	initialise_monitor_handles();
 #endif /* DEBUG_SEMIHOSTING */
 
+#ifdef DEBUG_SWV
+    // Enable TRCENA
+    DEMCR |= ( 1 << 24);
+    // Enable stimulus port 0
+    ITM_TRACE_EN |= ( 1 << 0);
+#endif /* DEBUG_SWV */
+
 	//Blinking the LEDs of the board
 	  //4 LED's of the boardare connected to portD pins 12-15
 

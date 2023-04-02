@@ -3,7 +3,7 @@
 
 #include <stdio.h>
 
-#ifdef DEBUG_SEMIHOSTING
+#if defined(DEBUG_SEMIHOSTING) || defined(DEBUG_SWV)
 #define DEBUG 1
 #else /* DEBUG_SEMIHOSTING */
 #define DEBUG 0
@@ -19,5 +19,9 @@
 //Prototype of the function to initialise the semi-hosting feature
 extern void initialise_monitor_handles(void);
 #endif /* DEBUG_SEMIHOSTING */
+
+#ifdef DEBUG_SWV
+void ITM_SendChar(unsigned char);
+#endif /*DEBUG_SWV*/
 
 #endif /* _DEBUG_H_ */
